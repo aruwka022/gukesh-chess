@@ -1,0 +1,38 @@
+{
+    "name": "GukeshMode — Chess Training",
+    "short_name": "Gukesh.Mode",
+    "description": "Chess platform built around the methodology of the world's youngest undisputed champion. Play offline against Stockfish AI.",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#0a0908",
+    "theme_color": "#0a0908",
+    "categories": ["games", "education"],
+    "lang": "en",
+    "icons": [
+      {
+        "src": "/icons/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/icons/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Play vs AI",
+        "short_name": "Vs AI",
+        "url": "/play/ai"
+      },
+      {
+        "name": "Local match",
+        "short_name": "Local",
+        "url": "/play/local"
+      }
+    ]
+  }
