@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================
+   GUKESHMODE DESIGN TOKENS — Tailwind v4 syntax
+   --------------------------------------------
+   The @theme block defines design tokens that
+   Tailwind turns into utility classes:
+     --color-ink       →  bg-ink, text-ink, border-ink
+     --color-saffron   →  bg-saffron, text-saffron
+     --font-display    →  font-display
+   ============================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Warm near-blacks — feels like ink on paper, not pure black */
+  --color-ink: #0a0908;
+  --color-ink-2: #14110f;
+  --color-ink-3: #1f1b17;
+
+  /* Borders */
+  --color-border: #2d2620;
+  --color-border-strong: #4a3f35;
+
+  /* Warm whites — cream for text, easier on eyes */
+  --color-cream: #f5f1eb;
+  --color-cream-muted: #a39b8c;
+  --color-cream-dim: #6b6157;
+
+  /* Saffron — Gukesh's heritage + champion accent */
+  --color-saffron: #e8924a;
+  --color-saffron-dim: #b06d36;
+
+  /* Emerald — secondary accent for status / positive actions */
+  --color-emerald: #5b8b7a;
+
+  /* Fonts — bridge from next/font variables (set on <html> by layout.tsx) */
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================
+   Non-utility tokens — used in inline styles
+   (e.g. chess board square colors)
+   ============================================ */
+:root {
+  --square-light: #e8ddc9;
+  --square-dark: #6b4a2e;
 }
 
+/* ============================================
+   Base body styles
+   ============================================ */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Custom .mono class — keeps shorter syntax in JSX */
+.mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+/* Text selection style */
+::selection {
+  background-color: var(--color-saffron);
+  color: var(--color-ink);
+}
+
+/* ============================================
+   Paper-grain overlay — subtle texture for atmosphere
+   Used on landing page hero section.
+   ============================================ */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   Thin scrollbar — for move history panel
+   ============================================ */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 3px;
 }
