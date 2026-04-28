@@ -3,22 +3,21 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/lib/LanguageContext";
 
-// Editorial display serif — gives the platform its "premium magazine" feel
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
 });
 
-// Modern body font — clean, NOT Inter (overused)
+// Geist supports Latin + Cyrillic — important for Russian and partial Kazakh
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
 });
 
-// Mono for chess notation, timestamps, labels
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
@@ -41,7 +40,11 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${geist.variable} ${geistMono.variable}`}
     >
-      <body className="bg-ink text-cream font-body antialiased">{children}</body>
+      <body className="bg-ink text-cream font-body antialiased">
+        {/* LanguageProvider wraps the entire app so every page and
+            component can use the useTranslation() hook. */}
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

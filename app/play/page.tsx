@@ -1,75 +1,82 @@
 // app/play/page.tsx
-//
-// The /play lobby — a "choose your mode" screen.
-// Editorial-style cards: Local match (two players) vs Vs AI.
+
+"use client";
 
 import Link from "next/link";
+import { useTranslation } from "@/lib/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function PlayLobbyPage() {
+  const { t } = useTranslation();
+
   return (
     <main className="min-h-screen bg-ink text-cream">
       {/* Header */}
-      <header className="border-b border-border px-6 md:px-10 py-5 flex items-center justify-between">
+      <header className="border-b border-border px-6 md:px-10 py-5 flex items-center justify-between gap-4">
         <Link href="/" className="font-display text-xl tracking-tight">
           Gukesh<span className="text-saffron">.</span>Mode
         </Link>
-        <div className="mono text-[11px] uppercase tracking-[0.25em] text-cream-muted">
-          ◆ Choose your mode
+        <div className="hidden md:block mono text-[11px] uppercase tracking-[0.25em] text-cream-muted">
+          {t("lobby.header.chooseMode")}
         </div>
-        <Link
-          href="/"
-          className="text-xs text-cream-muted hover:text-cream transition"
-        >
-          ← Home
-        </Link>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <Link
+            href="/"
+            className="text-xs text-cream-muted hover:text-cream transition whitespace-nowrap"
+          >
+            {t("lobby.header.home")}
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10 text-center">
         <p className="mono text-[11px] uppercase tracking-[0.25em] text-saffron mb-6">
-          ◆ Begin a session
+          {t("lobby.hero.tagline")}
         </p>
         <h1 className="font-display text-4xl md:text-6xl leading-tight max-w-3xl mx-auto">
-          How would you like to{" "}
-          <span className="italic text-saffron">play</span> today?
+          {t("lobby.hero.title")}
         </h1>
         <p className="mt-6 text-cream-muted max-w-xl mx-auto text-sm md:text-base">
-          Pick a mode. You can switch anytime once the game begins.
+          {t("lobby.hero.subtitle")}
         </p>
       </section>
 
-      {/* Two large mode cards */}
+      {/* Two main mode cards */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 pb-24">
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
           <ModeCard
             href="/play/local"
-            tag="Local match"
-            title="Two players, one screen."
-            body="A quiet game between friends. The board flips automatically. No clock unless you want one."
-            cta="Start a local match →"
+            tag={t("lobby.cards.local.tag")}
+            title={t("lobby.cards.local.title")}
+            body={t("lobby.cards.local.body")}
+            cta={t("lobby.cards.local.cta")}
             accent="cream"
           />
           <ModeCard
             href="/play/ai"
-            tag="Versus AI"
-            title="Calibrated to your level."
-            body="Play against the engine at four strengths — from your first tournament to a world champion. The engine adapts; you grow."
-            cta="Choose your opponent →"
+            tag={t("lobby.cards.ai.tag")}
+            title={t("lobby.cards.ai.title")}
+            body={t("lobby.cards.ai.body")}
+            cta={t("lobby.cards.ai.cta")}
             accent="saffron"
           />
         </div>
 
-        {/* Coming soon row — establishes that more modes are planned */}
+        {/* Coming-soon row */}
         <div className="mt-10 grid md:grid-cols-2 gap-6 md:gap-8">
           <DisabledModeCard
-            tag="Multiplayer"
-            title="Play a friend by link."
-            body="Share a private URL. Coming in the next release."
+            tag={t("lobby.cards.multiplayer.tag")}
+            title={t("lobby.cards.multiplayer.title")}
+            body={t("lobby.cards.multiplayer.body")}
+            soonLabel={t("lobby.cards.soonSuffix")}
           />
           <DisabledModeCard
-            tag="Calculation Trainer"
-            title="Find the move under pressure."
-            body="Timed positions from the world's elite. Coming soon."
+            tag={t("lobby.cards.trainer.tag")}
+            title={t("lobby.cards.trainer.title")}
+            body={t("lobby.cards.trainer.body")}
+            soonLabel={t("lobby.cards.soonSuffix")}
           />
         </div>
       </section>
@@ -122,15 +129,17 @@ function DisabledModeCard({
   tag,
   title,
   body,
+  soonLabel,
 }: {
   tag: string;
   title: string;
   body: string;
+  soonLabel: string;
 }) {
   return (
     <div className="relative p-7 bg-ink-2/50 border border-border rounded-2xl opacity-60">
       <div className="mono text-[11px] uppercase tracking-[0.25em] text-cream-dim mb-4">
-        ◆ {tag} · soon
+        ◆ {tag} · {soonLabel}
       </div>
       <h3 className="font-display text-xl mb-2 leading-tight">{title}</h3>
       <p className="text-cream-dim text-sm leading-relaxed">{body}</p>
