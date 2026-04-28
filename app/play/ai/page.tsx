@@ -10,6 +10,7 @@ import {
 } from "@/lib/useStockfish";
 import { useTranslation } from "@/lib/LanguageContext";
 import ChessBoard from "@/components/ChessBoard";
+import GameAnalysis from "@/components/GameAnalysis";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function VsAiPage() {
@@ -160,7 +161,7 @@ export default function VsAiPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14 space-y-8">
         <ChessBoard
           fen={game.fen}
           turn={game.turn}
@@ -185,6 +186,11 @@ export default function VsAiPage() {
           aiThinking={isThinking}
           opponentLabel={levelLabel}
         />
+
+        {/* AI Coach — only analyses player's (white) moves in vs-AI mode */}
+        <div className="max-w-[640px]">
+          <GameAnalysis history={game.history} playerColor="w" />
+        </div>
       </div>
     </main>
   );

@@ -1,11 +1,10 @@
-// app/play/local/page.tsx
-
 "use client";
 
 import Link from "next/link";
 import { useChessGame } from "@/lib/useChessGame";
 import { useTranslation } from "@/lib/LanguageContext";
 import ChessBoard from "@/components/ChessBoard";
+import GameAnalysis from "@/components/GameAnalysis";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function LocalMatchPage() {
@@ -19,7 +18,6 @@ export default function LocalMatchPage() {
           Gukesh<span className="text-saffron">.</span>Mode
         </Link>
 
-        {/* Mode switcher pill */}
         <nav className="hidden md:flex gap-1 p-1 bg-ink-2 border border-border rounded-full">
           <span className="px-4 py-1.5 mono text-[10px] uppercase tracking-[0.2em] bg-saffron text-ink rounded-full">
             {t("modeSwitch.local")}
@@ -49,7 +47,7 @@ export default function LocalMatchPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14 space-y-8">
         <ChessBoard
           fen={game.fen}
           turn={game.turn}
@@ -66,6 +64,11 @@ export default function LocalMatchPage() {
           onReset={game.reset}
           aiThinking={false}
         />
+
+        {/* AI Coach panel — analyses both players' moves in local match */}
+        <div className="max-w-[640px]">
+          <GameAnalysis history={game.history} playerColor="both" />
+        </div>
       </div>
     </main>
   );

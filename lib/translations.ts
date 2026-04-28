@@ -1,9 +1,4 @@
 // lib/translations.ts
-//
-// All UI text in three languages.
-// Structure: t.{section}.{key}
-//
-// Add a new key here, reference it via t("section.key") in components.
 
 export const SUPPORTED_LANGUAGES = ["en", "ru", "kz"] as const;
 export type Language = (typeof SUPPORTED_LANGUAGES)[number];
@@ -19,13 +14,6 @@ export const LANGUAGE_FULL_NAMES: Record<Language, string> = {
   ru: "Русский",
   kz: "Қазақша",
 };
-
-// ============================================================
-// Translation dictionary
-// ============================================================
-// Each top-level key is a "namespace" (a section of the app).
-// Each leaf is the same key in three languages.
-// ============================================================
 
 export const translations = {
   // -------- Landing page --------
@@ -420,5 +408,61 @@ export const translations = {
     local: { en: "Local match", ru: "Локально", kz: "Локалды" },
     ai: { en: "Vs AI", ru: "Против ИИ", kz: "ИИ-мен" },
     lobby: { en: "Lobby", ru: "Лобби", kz: "Лобби" },
+  },
+
+  // -------- AI Coach (game analysis) --------
+  coach: {
+    label: {
+      en: "◆ AI Coach",
+      ru: "◆ ИИ-тренер",
+      kz: "◆ ИИ-жаттықтырушы",
+    },
+    emptyState: {
+      en: "Play a game first — then I'll review every move and show you where you slipped.",
+      ru: "Сыграй партию — а я разберу каждый ход и покажу, где была ошибка.",
+      kz: "Алдымен партия ойнаңыз — мен әр жүрісті қарап, қай жерде қателескеніңізді көрсетемін.",
+    },
+    cta: {
+      en: "Game finished. Want a coach's review of your moves?",
+      ru: "Партия сыграна. Хочешь разбор от тренера?",
+      kz: "Партия аяқталды. Жаттықтырушыдан талдау керек пе?",
+    },
+    analyse: {
+      en: "Analyse the game",
+      ru: "Разобрать партию",
+      kz: "Партияны талдау",
+    },
+    analysing: {
+      en: "◆ Analysing your moves...",
+      ru: "◆ Анализирую твои ходы...",
+      kz: "◆ Жүрістеріңізді талдап жатырмын...",
+    },
+    results: {
+      en: "◆ Game review",
+      ru: "◆ Разбор партии",
+      kz: "◆ Партия талдауы",
+    },
+    notableMoves: {
+      en: "Notable moments",
+      ru: "Ключевые моменты",
+      kz: "Маңызды сәттер",
+    },
+    bestWas: {
+      en: "Best was",
+      ru: "Лучше было",
+      kz: "Дұрысы",
+    },
+    cleanGame: {
+      en: "A clean game — no significant errors. Well played.",
+      ru: "Чистая партия — серьёзных ошибок не было. Хорошо сыграно.",
+      kz: "Таза партия — елеулі қателер жоқ. Жақсы ойнадың.",
+    },
+    quality: {
+      brilliant: { en: "Brilliant", ru: "Блестяще", kz: "Тамаша" },
+      good: { en: "Good", ru: "Хорошо", kz: "Жақсы" },
+      inaccuracy: { en: "Inaccuracy", ru: "Неточность", kz: "Дәлсіздік" },
+      mistake: { en: "Mistake", ru: "Ошибка", kz: "Қате" },
+      blunder: { en: "Blunder", ru: "Зевок", kz: "Зевок" },
+    },
   },
 };
