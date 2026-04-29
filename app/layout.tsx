@@ -1,49 +1,61 @@
-// app/layout.tsx
-
-import type { Metadata } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/LanguageContext";
 
-const fraunces = Fraunces({
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-// Geist supports Latin + Cyrillic — important for Russian and partial Kazakh
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-body",
-  display: "swap",
 });
 
 const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "GukeshMode — Chess for the Calculator's Generation",
+  title: "Gukesh.Mode — Chess for the calculator's generation",
   description:
-    "Chess training built on the methodology of the world's youngest undisputed champion. Deep calculation, elite time management, slow deliberate play.",
+    "A chess training platform built around the methodology of the youngest world champion. Slow play, deep calculation, no bullet.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Gukesh.Mode",
+  },
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0908",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html
-      lang="en"
-      className={`${fraunces.variable} ${geist.variable} ${geistMono.variable}`}
-    >
-      <body className="bg-ink text-cream font-body antialiased">
-        {/* LanguageProvider wraps the entire app so every page and
-            component can use the useTranslation() hook. */}
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
+      >
         <LanguageProvider>{children}</LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );
