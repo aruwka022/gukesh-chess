@@ -1,38 +1,35 @@
-// components/LanguageSwitcher.tsx
-//
-// Three-way language toggle for the header.
-// Current language is highlighted in saffron.
-// Renders consistently on the server (defaults to "en")
-// then updates client-side once we know the user's choice.
-
 "use client";
 
 import { useTranslation } from "@/lib/LanguageContext";
+import { useAnalytics } from "@/lib/useAnalytics";
 import {
-  SUPPORTED_LANGUAGES,
   LANGUAGE_LABELS,
+  SUPPORTED_LANGUAGES,
   type Language,
 } from "@/lib/translations";
 
 export default function LanguageSwitcher() {
   const { lang, setLang } = useTranslation();
+  const { track } = useAnalytics();
 
   return (
     <div className="flex gap-1 p-1 bg-ink-2 border border-border rounded-full">
-      {SUPPORTED_LANGUAGES.map((code: Language) => {
-        const isActive = code === lang;
+      {SUPPORTED_LANGUAGES.map((lng) => {
+        const active = lang === lng;
         return (
           <button
-            key={code}
-            onClick={() => setLang(code)}
-            className={
-              isActive
-                ? "px-3 py-1 mono text-[10px] uppercase tracking-[0.2em] bg-saffron text-ink rounded-full transition-colors"
-                : "px-3 py-1 mono text-[10px] uppercase tracking-[0.2em] text-cream-muted hover:text-cream rounded-full transition-colors"
-            }
-            aria-label={`Switch to ${code.toUpperCase()}`}
+            key={lng}
+            onClick={() => {
+              setLang(lng as Language);
+              track("language_switched", { value: lng });
+            }}
+            className={`px-3 py-1 mono text-[10px] uppercase tracking-[0.15em] rounded-full transition-colors ${
+              active
+                ? "bg-saffron text-ink"
+                : "text-cream-muted hover:text-cream"
+            }`}
           >
-            {LANGUAGE_LABELS[code]}
+            {LANGUAGE_LABELS[lng]}
           </button>
         );
       })}

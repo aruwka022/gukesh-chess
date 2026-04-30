@@ -1,22 +1,19 @@
-// components/GameAnalysis.tsx
-//
-// Panel that runs the game analysis and displays results.
-// Shows: progress bar while analysing, then summary stats
-// (brilliant/good/inaccuracy/mistake/blunder counts), then per-move list.
-
 "use client";
 
 import { useState, useEffect } from "react";
-import { useGameAnalysis, type AnalysedMove, type MoveQuality } from "@/lib/useGameAnalysis";
+import {
+  useGameAnalysis,
+  type AnalysedMove,
+  type MoveQuality,
+} from "@/lib/useGameAnalysis";
 import { useTranslation } from "@/lib/LanguageContext";
+import { useAnalytics } from "@/lib/useAnalytics";
 
 interface GameAnalysisProps {
   history: string[];
-  // Filter — for vs AI mode we only care about player's (white) moves
   playerColor?: "w" | "b" | "both";
 }
 
-// Colour map for each move quality
 const QUALITY_STYLES: Record<MoveQuality, { dot: string; label: string }> = {
   brilliant: { dot: "bg-emerald", label: "text-emerald" },
   good: { dot: "bg-cream-muted", label: "text-cream" },
@@ -30,11 +27,11 @@ export default function GameAnalysis({
   playerColor = "both",
 }: GameAnalysisProps) {
   const { t } = useTranslation();
+  const { track } = useAnalytics();
   const { analysis, progress, isAnalysing, analyseGame, reset } =
     useGameAnalysis();
   const [hasStarted, setHasStarted] = useState(false);
 
-  // If history changes (new game), clear previous analysis
   useEffect(() => {
     if (analysis !== null) reset();
     setHasStarted(false);
@@ -43,12 +40,11 @@ export default function GameAnalysis({
 
   const handleAnalyse = () => {
     setHasStarted(true);
+    track("ai_coach_started");
     analyseGame(history);
   };
 
-  // ============================================================
-  // EMPTY STATE — game has no moves yet
-  // ============================================================
+  // EMPTY STATE
   if (history.length === 0) {
     return (
       <div className="p-5 bg-ink-2 border border-border rounded-xl">
@@ -62,9 +58,7 @@ export default function GameAnalysis({
     );
   }
 
-  // ============================================================
-  // BUTTON STATE — game played, no analysis yet
-  // ============================================================
+  // BUTTON STATE
   if (!hasStarted) {
     return (
       <div className="p-5 bg-gradient-to-br from-ink-2 to-ink rounded-xl border border-border-strong">
@@ -84,9 +78,7 @@ export default function GameAnalysis({
     );
   }
 
-  // ============================================================
-  // ANALYSING STATE — progress bar
-  // ============================================================
+  // ANALYSING STATE
   if (isAnalysing && (!analysis || analysis.length < history.length)) {
     return (
       <div className="p-5 bg-ink-2 border border-saffron/40 rounded-xl">
@@ -100,24 +92,21 @@ export default function GameAnalysis({
           />
         </div>
         <p className="mono text-[10px] uppercase tracking-[0.2em] text-cream-dim">
-          {Math.round(progress * 100)}% · {analysis?.length ?? 0} / {history.length}
+          {Math.round(progress * 100)}% · {analysis?.length ?? 0} /{" "}
+          {history.length}
         </p>
       </div>
     );
   }
 
-  // ============================================================
-  // RESULTS — analysis complete
-  // ============================================================
+  // RESULTS
   if (!analysis || analysis.length === 0) return null;
 
-  // Filter for the player's moves if requested (vs AI)
   const filtered =
     playerColor === "both"
       ? analysis
       : analysis.filter((m) => m.color === playerColor);
 
-  // Tally quality counts
   const counts: Record<MoveQuality, number> = {
     brilliant: 0,
     good: 0,
@@ -133,36 +122,14 @@ export default function GameAnalysis({
         {t("coach.results")}
       </div>
 
-      {/* Summary stats grid */}
       <div className="grid grid-cols-5 gap-2">
-        <StatBlock
-          count={counts.brilliant}
-          label={t("coach.quality.brilliant")}
-          colorClass="text-emerald"
-        />
-        <StatBlock
-          count={counts.good}
-          label={t("coach.quality.good")}
-          colorClass="text-cream"
-        />
-        <StatBlock
-          count={counts.inaccuracy}
-          label={t("coach.quality.inaccuracy")}
-          colorClass="text-yellow-500"
-        />
-        <StatBlock
-          count={counts.mistake}
-          label={t("coach.quality.mistake")}
-          colorClass="text-orange-400"
-        />
-        <StatBlock
-          count={counts.blunder}
-          label={t("coach.quality.blunder")}
-          colorClass="text-red-500"
-        />
+        <StatBlock count={counts.brilliant} label={t("coach.quality.brilliant")} colorClass="text-emerald" />
+        <StatBlock count={counts.good} label={t("coach.quality.good")} colorClass="text-cream" />
+        <StatBlock count={counts.inaccuracy} label={t("coach.quality.inaccuracy")} colorClass="text-yellow-500" />
+        <StatBlock count={counts.mistake} label={t("coach.quality.mistake")} colorClass="text-orange-400" />
+        <StatBlock count={counts.blunder} label={t("coach.quality.blunder")} colorClass="text-red-500" />
       </div>
 
-      {/* Per-move list — only show notable moves to keep it focused */}
       <div className="space-y-2 max-h-[320px] overflow-y-auto scrollbar-thin">
         <div className="mono text-[10px] uppercase tracking-[0.2em] text-cream-dim mb-2">
           {t("coach.notableMoves")}
@@ -188,10 +155,6 @@ export default function GameAnalysis({
     </div>
   );
 }
-
-// ============================================================
-// Sub-components
-// ============================================================
 
 function StatBlock({
   count,
@@ -221,17 +184,13 @@ function MoveRow({
 }) {
   const style = QUALITY_STYLES[move.quality];
   const moveLabel = `${move.moveNumber}${move.color === "w" ? "." : "..."}`;
-
-  // Convert UCI best move ("e2e4") to a readable form ("e2 → e4")
   const bestReadable = move.uciBest
     ? `${move.uciBest.slice(0, 2)} → ${move.uciBest.slice(2, 4)}`
     : null;
 
   return (
     <div className="px-3 py-2.5 bg-ink rounded-lg border border-border flex items-start gap-3">
-      <span
-        className={`w-2 h-2 rounded-full ${style.dot} flex-shrink-0 mt-1.5`}
-      />
+      <span className={`w-2 h-2 rounded-full ${style.dot} flex-shrink-0 mt-1.5`} />
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2 mono text-sm">
           <span className="text-cream-dim">{moveLabel}</span>
@@ -240,11 +199,14 @@ function MoveRow({
             {t(`coach.quality.${move.quality}`)}
           </span>
         </div>
-        {bestReadable && move.quality !== "brilliant" && move.quality !== "good" && (
-          <div className="mt-1 mono text-[11px] text-cream-muted">
-            {t("coach.bestWas")}: <span className="text-emerald">{bestReadable}</span>
-          </div>
-        )}
+        {bestReadable &&
+          move.quality !== "brilliant" &&
+          move.quality !== "good" && (
+            <div className="mt-1 mono text-[11px] text-cream-muted">
+              {t("coach.bestWas")}:{" "}
+              <span className="text-emerald">{bestReadable}</span>
+            </div>
+          )}
       </div>
       <span className="mono text-[10px] text-cream-dim flex-shrink-0 mt-1.5">
         −{move.cpLost}cp

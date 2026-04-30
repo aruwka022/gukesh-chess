@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useChessGame } from "@/lib/useChessGame";
 import { useTranslation } from "@/lib/LanguageContext";
+import { useAnalytics } from "@/lib/useAnalytics";
 import ChessBoard from "@/components/ChessBoard";
 import GameAnalysis from "@/components/GameAnalysis";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -10,6 +12,11 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 export default function LocalMatchPage() {
   const game = useChessGame();
   const { t } = useTranslation();
+  const { track } = useAnalytics();
+
+  useEffect(() => {
+    track("local_match_started");
+  }, [track]);
 
   return (
     <main className="min-h-screen bg-ink text-cream">
@@ -65,7 +72,6 @@ export default function LocalMatchPage() {
           aiThinking={false}
         />
 
-        {/* AI Coach panel — analyses both players' moves in local match */}
         <div className="max-w-[640px]">
           <GameAnalysis history={game.history} playerColor="both" />
         </div>

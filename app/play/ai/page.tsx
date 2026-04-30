@@ -9,6 +9,7 @@ import {
   type DifficultyLevel,
 } from "@/lib/useStockfish";
 import { useTranslation } from "@/lib/LanguageContext";
+import { useAnalytics } from "@/lib/useAnalytics";
 import ChessBoard from "@/components/ChessBoard";
 import GameAnalysis from "@/components/GameAnalysis";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -17,6 +18,7 @@ export default function VsAiPage() {
   const game = useChessGame();
   const { isReady, isThinking, getBestMove } = useStockfish();
   const { t } = useTranslation();
+  const { track } = useAnalytics();
 
   const [level, setLevel] = useState<DifficultyLevel | null>(null);
 
@@ -95,7 +97,11 @@ export default function VsAiPage() {
               (key, i) => (
                 <button
                   key={key}
-                  onClick={() => setLevel(key)}
+                  onClick={() => {
+                    setLevel(key);
+                    track("ai_level_chosen", { value: key });
+                    track("ai_match_started");
+                  }}
                   disabled={!isReady}
                   className="group p-7 bg-ink-2 border border-border rounded-2xl hover:border-saffron-dim transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -187,7 +193,6 @@ export default function VsAiPage() {
           opponentLabel={levelLabel}
         />
 
-        {/* AI Coach — only analyses player's (white) moves in vs-AI mode */}
         <div className="max-w-[640px]">
           <GameAnalysis history={game.history} playerColor="w" />
         </div>
